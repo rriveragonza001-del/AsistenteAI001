@@ -1,4 +1,4 @@
-console.log("GestorIA JS cargado");
+console.log("✅ GestorIA JS cargado");
 
 const { useState } = React;
 
@@ -9,7 +9,7 @@ function App() {
     "div",
     { className: "space-y-4" },
     React.createElement("h1", null, "GestorIA funcionando"),
-    React.createElement("p", null, `Clicks: ${count}`),
+    React.createElement("p", null, "Clicks: " + count),
     React.createElement(
       "button",
       {
@@ -21,6 +21,5 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  React.createElement(App)
-);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(React.createElement(App));
