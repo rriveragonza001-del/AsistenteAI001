@@ -1,7 +1,7 @@
 {
-  "name": "gestoria-asistente-administrativo-inteligente",
+  "name": "gestoria:-asistente-administrativo-inteligente",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,16 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@google/genai": "^1.39.0"
+    "react": "^19.2.4",
+    "@google/genai": "^1.39.0",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.3.4",
-    "typescript": "~5.4.5",
-    "vite": "^5.4.10"
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
   }
 }

@@ -2,48 +2,48 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { UploadedFile, AnalysisResult } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeDocuments = async (
   files: UploadedFile[],
   history: AnalysisResult[] = []
 ): Promise<AnalysisResult> => {
-  const model = "gemini-3-pro-preview"; // Use Pro for complex reasoning and learning
+  // Utilizamos gemini-3-pro-preview para razonamiento complejo y análisis de historial
+  const model = "gemini-3-pro-preview";
   
   const historicalContext = history.length > 0 
-    ? `HISTORIAL DE ANÁLISIS PREVIOS (Aprendizaje): ${JSON.stringify(history.slice(-3).map(h => ({ summary: h.summary, badPoints: h.badPoints })))}`
-    : "No hay historial previo.";
+    ? `HISTORIAL DE APRENDIZAJE (Resúmenes previos): ${JSON.stringify(history.slice(-5).map(h => ({ summary: h.summary, badPoints: h.badPoints })))}`
+    : "No hay historial previo. Este es el primer análisis.";
 
   const prompt = `
-    Actúa como un Asistente Administrativo y Técnico de IA Avanzado.
-    Tu tarea es analizar los archivos actuales y APRENDER de los análisis previos para sugerir mejoras autogestionables.
+    Actúa como un Director de Proyectos y Auditor Técnico Senior impulsado por IA.
+    Tu misión es analizar los archivos actuales y COMPARARLOS con el historial previo para detectar patrones de error o éxito.
     
     ${historicalContext}
     
-    OBJETIVOS:
-    1. Consolidar información de reportes y programaciones.
-    2. Comparar cumplimiento técnico.
-    3. Identificar lo BUENO, lo MALO y MEJORAS.
-    4. APRENDIZAJE: Si detectas que un error técnico o retraso se repite respecto al historial, márcalo como "recurrente".
-    5. AUTOGESTIÓN: Genera una lista de "Acciones Sugeridas" que el usuario pueda seguir en la app.
+    INSTRUCCIONES:
+    1. CONSOLIDACIÓN: Une la información de programaciones y reportes.
+    2. AUDITORÍA: Detecta desviaciones entre lo planeado y lo ejecutado.
+    3. APRENDIZAJE: Si un problema en "badPoints" ha aparecido en el historial, márcalo como recurrente en el resumen.
+    4. ACCIONES: Genera "suggestedActions" concretas y técnicas que el usuario pueda marcar como realizadas en la app.
 
-    Responde estrictamente en formato JSON:
+    Responde ÚNICAMENTE en JSON con esta estructura:
     {
-      "summary": "Resumen ejecutivo con enfoque en evolución",
-      "goodPoints": ["Punto 1", "Punto 2"],
-      "badPoints": ["Punto 1", "Punto 2"],
-      "improvements": ["Acción sugerida 1", "Acción sugerida 2"],
-      "impactScore": número del 1 al 100,
-      "comparativeInsights": "Análisis de cumplimiento",
+      "summary": "Resumen técnico ejecutivo",
+      "goodPoints": ["Punto positivo 1", "..."],
+      "badPoints": ["Punto negativo o riesgo 1", "..."],
+      "improvements": ["Mejora sugerida 1", "..."],
+      "impactScore": número 0-100,
+      "comparativeInsights": "Detalle de cumplimiento vs programación",
       "suggestedActions": [
         {
-          "id": "generar_id_unico",
-          "title": "Título corto de la acción",
-          "description": "Explicación técnica de qué hacer",
-          "priority": "Alta/Media/Baja",
+          "id": "id_unico_string",
+          "title": "Título de la tarea",
+          "description": "Qué debe hacer el equipo específicamente",
+          "priority": "Alta" | "Media" | "Baja",
           "status": "Pendiente",
-          "createdAt": "${new Date().toISOString()}",
-          "recurring": true/false
+          "createdAt": "timestamp",
+          "recurring": boolean
         }
       ]
     }
@@ -92,6 +92,5 @@ export const analyzeDocuments = async (
     }
   });
 
-  const jsonStr = response.text;
-  return JSON.parse(jsonStr || "{}");
+  return JSON.parse(response.text || "{}");
 };
