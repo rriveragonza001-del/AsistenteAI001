@@ -1,4 +1,4 @@
-console.log("✅ GestorIA iniciado");
+console.log("✅ GestorIA iniciado con gestión de archivos");
 
 const { useState } = React;
 
@@ -29,7 +29,7 @@ function Sidebar({ view, setView }) {
   );
 }
 
-function Dashboard() {
+function Dashboard({ files }) {
   return React.createElement(
     "div",
     null,
@@ -37,62 +37,27 @@ function Dashboard() {
     React.createElement(
       "p",
       null,
-      "Bienvenido al centro de control de GestorIA."
+      "Archivos cargados: ",
+      React.createElement("strong", null, files.length)
     )
   );
 }
 
-function Files() {
+function Files({ files, setFiles }) {
+  const onUpload = (e) => {
+    const newFiles = Array.from(e.target.files).map(f => ({
+      id: crypto.randomUUID(),
+      name: f.name,
+      type: f.type || "desconocido",
+      size: f.size,
+      date: new Date().toLocaleDateString()
+    }));
+    setFiles(prev => [...prev, ...newFiles]);
+  };
+
   return React.createElement(
     "div",
     null,
-    React.createElement("h1", { className: "text-2xl font-bold mb-2" }, "Archivos"),
-    React.createElement(
-      "p",
-      null,
-      "Aquí se cargarán reportes y programaciones."
-    )
-  );
-}
-
-function Actions() {
-  return React.createElement(
-    "div",
-    null,
-    React.createElement("h1", { className: "text-2xl font-bold mb-2" }, "Acciones"),
-    React.createElement(
-      "p",
-      null,
-      "Acciones sugeridas por la IA."
-    )
-  );
-}
-
-/* ---------- APP PRINCIPAL ---------- */
-
-function App() {
-  const [view, setView] = useState("dashboard");
-
-  let content;
-  if (view === "dashboard") content = React.createElement(Dashboard);
-  if (view === "files") content = React.createElement(Files);
-  if (view === "actions") content = React.createElement(Actions);
-
-  return React.createElement(
-    "div",
-    { className: "flex min-h-screen bg-slate-100" },
-    React.createElement(Sidebar, { view, setView }),
-    React.createElement(
-      "main",
-      { className: "flex-1 p-8" },
-      content
-    )
-  );
-}
-
-/* ---------- RENDER ---------- */
-
-ReactDOM.render(
-  React.createElement(App),
-  document.getElementById("root")
-);
+    React.createElement("h1", { className: "text-2xl font-bold mb-4" }, "Archivos"),
+    React.createElement("input", {
+      t
