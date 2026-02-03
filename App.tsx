@@ -100,3 +100,40 @@ const App: React.FC = () => {
 };
 
 export default App;
+const renderView = () => {
+  switch (state.selectedView) {
+    case 'dashboard':
+      return (
+        <AnalysisDashboard
+          files={state.files}
+          isAnalyzing={isAnalyzing}
+          analysisResult={analysisResult}
+          onAnalyze={startAnalysis}
+          onRemoveFile={removeFile}
+        />
+      );
+
+    case 'upload':
+      return (
+        <FileUpload
+          onFilesAdded={handleFilesAdded}
+        />
+      );
+
+    case 'actions':
+      return (
+        <ActionTracker
+          items={state.actionItems}
+          onUpdateStatus={updateActionStatus}
+          onRemove={removeAction}
+        />
+      );
+
+    default:
+      return (
+        <div className="text-slate-500">
+          Vista no definida
+        </div>
+      );
+  }
+};
