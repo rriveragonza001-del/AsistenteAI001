@@ -88,14 +88,14 @@ const App: React.FC = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 pl-64">
-      <Sidebar
-        currentView={state.selectedView}
-        onViewChange={(view) =>
-          setState((prev) => ({ ...prev, selectedView: view }))
-        }
-      />
+  rreturn (
+  <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+    <h1 className="text-3xl font-bold text-green-600">
+      ✅ React + Vite + Vercel funcionando
+    </h1>
+  </div>
+);
+
 
       <main className="p-10 max-w-6xl mx-auto">
         {renderView()}
