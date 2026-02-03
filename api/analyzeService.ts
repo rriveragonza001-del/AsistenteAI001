@@ -1,11 +1,13 @@
-export async function analyzeDocuments(files: any[], history: any[]) {
-  const res = await fetch("/api/analyze", {
+export async function analyzeDocuments(files: any[], history: any[] = []) {
+  const response = await fetch("/api/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ files, history })
   });
 
-  if (!res.ok) throw new Error("Error en análisis");
+  if (!response.ok) {
+    throw new Error("Error al analizar documentos");
+  }
 
-  return await res.json();
+  return await response.json();
 }
