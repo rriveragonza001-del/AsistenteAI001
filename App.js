@@ -1,4 +1,4 @@
-console.log("✅ GestorIA JS cargado");
+console.log("✅ GestorIA JS cargado correctamente");
 
 const { useState } = React;
 
@@ -8,7 +8,7 @@ function App() {
   return React.createElement(
     "div",
     { className: "space-y-4" },
-    React.createElement("h1", null, "GestorIA funcionando"),
+    React.createElement("h1", { className: "text-3xl font-bold" }, "GestorIA funcionando"),
     React.createElement("p", null, "Clicks: " + count),
     React.createElement(
       "button",
@@ -21,5 +21,8 @@ function App() {
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(React.createElement(App));
+// ✅ FORMA CORRECTA EN UMD
+ReactDOM.render(
+  React.createElement(App),
+  document.getElementById("root")
+);
