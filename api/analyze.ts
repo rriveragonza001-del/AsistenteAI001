@@ -9,12 +9,12 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { files, history } = req.body;
+  const { files = [], history = [] } = req.body;
 
   const model = "gemini-3-pro-preview";
 
   const historicalContext =
-    history?.length > 0
+    history.length > 0
       ? `HISTORIAL PREVIO: ${JSON.stringify(
           history.slice(-3).map((h: any) => ({
             summary: h.summary,
@@ -24,15 +24,16 @@ export default async function handler(req: any, res: any) {
       : "No hay historial previo.";
 
   const prompt = `
-Actúa como Asistente Administrativo y Técnico de IA.
+Actúa como un Asistente Administrativo y Técnico de IA Avanzado.
+
 ${historicalContext}
 
-Devuelve SOLO JSON válido con:
+Devuelve estrictamente JSON con:
 summary, goodPoints, badPoints, improvements, impactScore,
 comparativeInsights y suggestedActions.
 `;
 
-  const parts = (files || []).map((file: any) => ({
+  const parts = files.map((file: any) => ({
     inlineData: {
       mimeType: file.mimeType,
       data: file.contentBase64 || ""
@@ -41,7 +42,46 @@ comparativeInsights y suggestedActions.
 
   const response = await ai.models.generateContent({
     model,
-    contents: { parts: [...parts, { text: prompt }] }
+    contents: { parts: [...parts, { text: prompt }] },
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          summary: { type: Type.STRING },
+          goodPoints: { type: Type.ARRAY, items: { type: Type.STRING } },
+          badPoints: { type: Type.ARRAY, items: { type: Type.STRING } },
+          improvements: { type: Type.ARRAY, items: { type: Type.STRING } },
+          impactScore: { type: Type.NUMBER },
+          comparativeInsights: { type: Type.STRING },
+          suggestedActions: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                id: { type: Type.STRING },
+                title: { type: Type.STRING },
+                description: { type: Type.STRING },
+                priority: { type: Type.STRING },
+                status: { type: Type.STRING },
+                createdAt: { type: Type.STRING },
+                recurring: { type: Type.BOOLEAN }
+              },
+              required: ["id", "title", "description", "priority", "status", "createdAt"]
+            }
+          }
+        },
+        required: [
+          "summary",
+          "goodPoints",
+          "badPoints",
+          "improvements",
+          "impactScore",
+          "comparativeInsights",
+          "suggestedActions"
+        ]
+      }
+    }
   });
 
   return res.status(200).json(JSON.parse(response.text || "{}"));
